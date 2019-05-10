@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+  	<meta name="google-signin-client_id" content="455879692718-31a814ua0ch6tal2errkrtf4976ckq1h.apps.googleusercontent.com">
+
+	<title>My Cool App</title>
+	<link rel="manifest" href="./manifest.json">
+	
+	<link rel="stylesheet" href="https://unpkg.com/material-components-web@0.40.0/dist/material-components-web.min.css" />
+	<link href="style.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    <style>
+		.content {
+			display: none;
+			margin: 1em;
+		}
+        .Open {color: purple;}
+        .Completed {color: Green;}
+	</style>
+    
+    <style>
+       /* Set the size of the div element that contains the map */
+      #map {
+        height: 600px;  /* The height is 400 pixels */
+        width: 100%;  /* The width is the width of the web page */
+       }
+    </style>
+    
+    
+</head>
+    
+<body>
+	<!-- top nav bar -->
+	<header class="mdc-top-app-bar">
+		<div class="mdc-top-app-bar__row">
+			<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+				<a href="#" class="material-icons mdc-top-app-bar__navigation-icon">menu</a>
+				<span class="mdc-top-app-bar__title">Chicago Police Stations</span>
+			</section>
+		</div>
+	</header>
+    
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://unpkg.com/material-components-web@0.40.0/dist/material-components-web.min.js"></script>
+	<script src="script.js"></script>
+  
+  
+  <!-- putting the Google library scripts at the top level due to use across screens -->
+  
+  <script src="https://apis.google.com/js/platform.js"></script>
+  
+  <script src="https://apis.google.com/js/api.js"></script>
+
+<div id="map"></div>
+    <script>
+      // Note: This example requires that you consent to location sharing when
+      // prompted by your browser. If you see the error "The Geolocation service
+      // failed.", it means you probably did not give permission for the browser to
+      // locate you.
+      var map, infoWindow;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 41.87, lng: -87.62},
+          zoom: 12
+        });
+        infoWindow = new google.maps.InfoWindow;
+          
+          var loc = getCurrentLocation();
+        
+        $.get("https://data.cityofchicago.org/resource/9rg7-mz9y.json",
+
+      function(response) {
+        var data = response;
+        createMarkers(map, data );
+      });
+
+}
+      
+        
+      function createMarkers (map, data) {
+    console.log(data);
+    $.each(data, function(i,v) {
+
+      var location = {lat: parseFloat(v.latitude), lng: parseFloat(v.longitude) }
+      
+      var marker = new google.maps.Marker({position: location, map: map});
+
+      var infowindow = new google.maps.InfoWindow({
+        content: v.district_name
+      });
+
+      marker.addListener('click', function() {
+        infowindow.open(map, marker);
+      });
+
+    });
+
+          
+          
+          
+  }  
+        
+          function getCurrentLocation(callback) {
+   if(navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+         callback(new google.maps.LatLng(position.coords.latitude,
+                                       position.coords.longitude));
+       });
+    }
+    else {
+       throw new Error("Your browser does not support geolocation.");     
+    }
+} 
+     
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDa4dMSOASs_iLQnhrPoQ8EZgj2Im_pZ7o&callback=initMap">
+    </script>
+ 
+    
+    
+    
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      
+
+    <script>
+      $(document).ready(function() {
+
+        function hideScreens() {
+          $(".content").hide();
+        }
+
+        $(".nav-link").on("click", function(){
+          hideScreens();
+          var target = $(this).attr("href");
+          $(target).show();
+        });
+
+      });
+    </script>
+    
+    
+
+</body>
